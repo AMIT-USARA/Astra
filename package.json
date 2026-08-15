@@ -1,0 +1,19 @@
+{
+  "name": "ai-resume-checker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI Resume Checker: resume parsing, explainable scoring and TF-IDF job matching",
+  "scripts": {
+    "setup": "npm --prefix backend install && npm --prefix frontend install",
+    "dev": "node dev.js",
+    "build": "npm --prefix frontend run build",
+    "start": "npm --prefix backend start",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "test": "npm --prefix backend test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "type": "module"
+}
