@@ -7,7 +7,16 @@ export async function extractText(buffer, ext) {
   if (ext === '.pdf') {
     const parser = new PDFParse({ data: buffer });
     try {
-      return (await parser.getText()).text;
+      const text = (await parser.getText()).text;
+      const info = await parser.getInfo({ parsePageInfo: true }).catch(() => null);
+      const annotUrls = (info?.pages || [])
+        .flatMap((pg) => pg.links || [])
+        .map((l) => (typeof l === 'string' ? l : l?.url || l?.uri || ''))
+        .filter(Boolean);
+      const rawUrls = [...buffer.toString('latin1').matchAll(/\/URI\s*\((https?:\/\/[^)\s]+)\)/g)].map((m) => m[1]);
+      const extraLinks = [...new Set([...annotUrls, ...rawUrls])]
+        .filter((u) => /(?:linkedin\.com\/in\/|github\.com\/)/i.test(u) && !text.includes(u));
+      return extraLinks.length ? `${text}\n${extraLinks.join('\n')}` : text;
     } finally {
       await parser.destroy();
     }
@@ -45,7 +54,7 @@ const HEADINGS = {
   skills: ['skills', 'technical skills', 'key skills', 'core competencies', 'technical proficiencies', 'skills summary', 'areas of expertise', 'technologies', 'tech stack', 'skills & tools', 'skills and tools', 'tools & technologies', 'programming languages'],
   certifications: ['certifications', 'certification', 'certificates', 'courses', 'licenses & certifications', 'licenses and certifications', 'certifications & courses', 'licenses'],
   achievements: ['achievements', 'awards', 'honors', 'accomplishments', 'awards & achievements'],
-  activities: ['extracurricular activities', 'activities', 'positions of responsibility', 'leadership', 'volunteering'],
+  activities: ['extracurricular activities', 'activities', 'position of responsibility', 'positions of responsibility', 'leadership', 'volunteering'],
 };
 
 const HEADING_LOOKUP = new Map(
@@ -92,7 +101,7 @@ const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/;
 const PHONE_RE = /\(?\+?\(?\d[\d\s().-]{8,17}\d/g;
 const LINKEDIN_RE = /(?:https?:\/\/)?(?:www\.)?linkedin\.com\/in\/[A-Za-z0-9._-]+/i;
 const GITHUB_RE = /(?:https?:\/\/)?(?:www\.)?github\.com\/[A-Za-z0-9_-]+/i;
-const DEGREE_RE = /\b(B\.?\s?Tech|M\.?\s?Tech|B\.?E\.?|M\.?E\.?|B\.?Sc|M\.?Sc|BCA|MCA|MBA|BBA|B\.?Com|Ph\.?D|Bachelor(?:'s)?(?: of [A-Za-z ]+)?|Master(?:'s)?(?: of [A-Za-z ]+)?|Diploma|Higher Secondary|Senior Secondary|Class (?:X|XII|10|12)(?:th)?|HSC|SSC|CBSE|ICSE)\b/i;
+const DEGREE_RE = /\b(B\.?\s?Tech|M\.?\s?Tech|B\.?E\.?|M\.?E\.?|B\.?Sc|M\.?Sc|BCA|MCA|MBA|BBA|B\.?Com|Ph\.?D|Bachelor(?:'s)?(?: of (?:(?!\b(?:GPA|CGPA|SGPA|Percentage)\b)[A-Za-z ])+)?|Master(?:'s)?(?: of (?:(?!\b(?:GPA|CGPA|SGPA|Percentage)\b)[A-Za-z ])+)?|Diploma|Higher Secondary|Senior Secondary|Class (?:X|XII|10|12)(?:th)?|HSC|SSC|CBSE|ICSE)\b/i;
 const GRADE_RE = /\b(?:CGPA|GPA|SGPA|Percentage)\s*[:\-]?\s*\d{1,2}(?:\.\d{1,2})?(?:\s*\/\s*10)?|\b\d{2}(?:\.\d{1,2})?\s?%/i;
 const YEAR_RE = /\b(19|20)\d{2}\b/;
 const DATE_RANGE_RE = /\b(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\.?\s+|(?:0?[1-9]|1[0-2])\/)?(?:19|20)\d{2}\s*(?:-|–|—|to)\s*(?:(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\.?\s+|(?:0?[1-9]|1[0-2])\/)?(?:19|20)\d{2}|Present|Current|Now|Ongoing)\b/gi;
@@ -117,10 +126,13 @@ const NON_NAME_WORDS = new Set([
 
 // Name heuristic: first line in the header block that looks like 2-4 capitalised
 // words with no digits, symbols or section/title keywords. Returns null rather than guessing.
-function extractName(sections) {
-  const candidates = (sections.header || []).slice(0, 8);
+function extractName(sections, rawText = '') {
+  const candidates = (sections.header?.length ? sections.header : rawText.split('\n')).slice(0, 8);
   for (const line of candidates) {
-    const clean = line.split(/[|,•]/)[0].trim();
+    const clean = line
+      .split(/[|,•#\u0192]/)[0]
+      .replace(/\s+(?:[A-Za-z0-9._%+-]+@.*|\+?\d[\d\s().-]{6,}.*|https?:\/\/.*)$/, '')
+      .trim();
     if (/[\d@:/]/.test(clean)) continue;
     const words = clean.split(/\s+/);
     if (words.length < 2 || words.length > 4) continue;
@@ -164,7 +176,7 @@ export function parseResume(rawText) {
     text,
     sections,
     candidate: {
-      name: extractName(sections),
+      name: extractName(sections, text),
       email: first(EMAIL_RE, text),
       phone: extractPhone(text),
       linkedin: first(LINKEDIN_RE, text),

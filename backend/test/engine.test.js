@@ -73,3 +73,21 @@ test('parser handles ligatures, inline colon headings, dotted LinkedIn and skips
   assert.equal(parsed.experience.dateRanges[0], '05/2024 - Present');
   assert.ok(parsed.text.includes('workflow') && parsed.text.includes('profile'));
 });
+
+test('parser extracts name when phone/email share line, trims GPA from degree, and detects Position of Responsibility', () => {
+  const raw = [
+    'Utkarsh Kumar +91 78273 65765 utkarshmain147@gmail.com',
+    'EDUCATION',
+    'Indian Institute of Information Technology Bhagalpur Aug 2023 - May 2027',
+    'Bachelor of Technology in Computer Science and Engineering GPA: 8.09/10',
+    'POSITION OF RESPONSIBILITY',
+    'Cybersecurity Club Lead, IIIT Bhagalpur Aug 2025 - Apr 2026',
+  ].join('\n');
+  const parsed = parseResume(raw);
+  assert.equal(parsed.candidate.name, 'Utkarsh Kumar');
+  assert.equal(parsed.candidate.email, 'utkarshmain147@gmail.com');
+  assert.equal(parsed.candidate.phone, '+91 78273 65765');
+  assert.equal(parsed.education.degree, 'Bachelor of Technology in Computer Science and Engineering');
+  assert.equal(parsed.education.grade, 'GPA: 8.09/10');
+  assert.ok(parsed.sections.activities?.length === 1);
+});
