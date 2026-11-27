@@ -36,7 +36,9 @@ export function hashPassword(password) {
 export function checkPassword(password, stored = '') {
   const [salt, hash] = stored.split(':');
   if (!salt || !hash) return false;
-  return crypto.timingSafeEqual(crypto.scryptSync(password, salt, 64), Buffer.from(hash, 'hex'));
+  const expected = Buffer.from(hash, 'hex');
+  if (expected.length !== 64) return false;
+  return crypto.timingSafeEqual(crypto.scryptSync(password, salt, 64), expected);
 }
 
 export function requireAuth(req, res, next) {

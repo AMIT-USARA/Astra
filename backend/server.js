@@ -8,14 +8,18 @@ import authRoutes from './routes/authRoutes.js';
 import { aiModel } from './services/ai.js';
 import { initStorage, storageMode } from './services/storage.js';
 import { notFound, errorHandler } from './middleware/errorHandler.js';
+import { apiLimiter, securityHeaders } from './middleware/security.js';
 
 const PORT = Number(process.env.PORT || 5000);
 const origins = (process.env.CLIENT_ORIGIN || 'http://localhost:5173').split(',').map((s) => s.trim());
 
 const app = express();
+app.set('trust proxy', 1);
 app.disable('x-powered-by');
+app.use(securityHeaders);
 app.use(cors({ origin: origins }));
 app.use(express.json({ limit: '1mb' }));
+app.use('/api', apiLimiter);
 
 app.get('/api/health', (req, res) => {
   res.json({ success: true, status: 'ok', storage: storageMode(), ai: aiModel(), uptime: Math.round(process.uptime()), timestamp: new Date().toISOString() });
@@ -26,8 +30,12 @@ app.use('/api/resume', resumeRoutes);
 // If the frontend has been built (npm run build), serve it too, so the whole app runs on one port.
 const dist = path.resolve(import.meta.dirname, '../frontend/dist');
 if (fs.existsSync(dist)) {
-  app.use(express.static(dist));
-  app.get(/^\/(?!api\/).*/, (req, res) => res.sendFile(path.join(dist, 'index.html')));
+  app.use('/assets', express.static(path.join(dist, 'assets'), { maxAge: '1y', immutable: true }));
+  app.use(express.static(dist, { maxAge: '1h' }));
+  app.get(/^\/(?!api\/).*/, (req, res) => {
+    res.setHeader('Cache-Control', 'no-cache');
+    res.sendFile(path.join(dist, 'index.html'));
+  });
 }
 app.use(notFound);
 app.use(errorHandler);

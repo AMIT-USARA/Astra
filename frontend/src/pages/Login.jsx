@@ -3,8 +3,10 @@ import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { LogIn, UserPlus } from 'lucide-react';
 import { useAuth } from '../auth.jsx';
 import { ErrorBox, Spinner } from '../components/ui.jsx';
+import { usePageMeta } from '../seo.js';
 
 export default function Login() {
+  usePageMeta('Log In or Sign Up | astrACode');
   const { user, login, register } = useAuth();
   const [params] = useSearchParams();
   const navigate = useNavigate();

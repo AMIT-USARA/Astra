@@ -7,7 +7,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function readCredentials(body = {}) {
   const email = String(body.email || '').trim().toLowerCase();
   const password = String(body.password || '');
-  if (!EMAIL_RE.test(email)) throw httpError(400, 'Please enter a valid email address.');
+  if (!EMAIL_RE.test(email) || email.length > 254) throw httpError(400, 'Please enter a valid email address.');
   if (password.length < 8 || password.length > 128) throw httpError(400, 'Password must be 8 to 128 characters long.');
   return { email, password };
 }

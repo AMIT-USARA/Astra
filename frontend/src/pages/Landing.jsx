@@ -3,6 +3,8 @@ import {
   ArrowRight, Upload, ScanText, Brain, Gauge, Target, FileDown, Sparkles,
   ShieldCheck, History, Lightbulb, Clock, Eye,
 } from 'lucide-react';
+import { cursorMotion } from '../components/ui.jsx';
+import { usePageMeta } from '../seo.js';
 
 const FEATURES = [
   [ScanText, 'Resume parsing', 'Extracts text from PDF and DOCX, then detects name, contact details, education, experience, projects and certifications.'],
@@ -31,7 +33,7 @@ const BENEFITS = [
 function Pipeline() {
   const nodes = ['Resume (PDF / DOCX)', 'Text extraction', 'Section & entity detection', 'Skill matching + TF-IDF', 'AI review (OpenAI)', 'Score & suggestions'];
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <div {...cursorMotion} className="motion-card rounded-2xl border border-slate-200 bg-gradient-to-br from-[#e5ead1]/70 via-[#fffdf8] to-[#f5ddd0]/70 p-6 shadow-sm dark:border-slate-800 dark:from-[#262b17] dark:via-[#1f2117] dark:to-[#2e2119]">
       <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Analysis pipeline</p>
       <ol className="space-y-3">
         {nodes.map((n, i) => (
@@ -51,6 +53,10 @@ function Pipeline() {
 }
 
 export default function Landing() {
+  usePageMeta(
+    'astrACode — Free AI Resume Score Checker & Job Match Analyzer',
+    'Check your resume score out of 100 in seconds. Get an explainable ATS-style resume score, skill gap analysis, TF-IDF job match percentage, and AI recruiter review.',
+  );
   return (
     <div className="fade-in">
       {/* Hero */}
@@ -79,11 +85,9 @@ export default function Landing() {
       {/* Intro */}
       <section className="border-y border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
         <div className="mx-auto max-w-4xl px-4 py-14 text-center">
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Why this project?</h2>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Transparent 100-Point Resume Score — Why astrACode?</h2>
           <p className="mt-4 text-slate-600 dark:text-slate-300">
-            Students often send the same resume to every job without knowing whether it covers what the role asks for. AI Resume Checker
-            applies classic information-retrieval techniques — tokenisation, TF-IDF weighting and cosine similarity — together with rule-based
-            entity extraction to give clear, evidence-based feedback instead of a mysterious number.
+            Most resume score tools give you a mysterious number with no explanation. astrACode applies classic information-retrieval techniques — tokenisation, TF-IDF weighting and cosine similarity — together with rule-based entity extraction across 9 clear criteria (contact, structure, skills, education, experience, projects, certifications, impact, and keyword relevance) plus an optional OpenAI recruiter review.
           </p>
         </div>
       </section>
@@ -94,7 +98,7 @@ export default function Landing() {
         <p className="mx-auto mt-3 max-w-2xl text-center text-slate-500 dark:text-slate-400">Each feature below works on your actual resume content.</p>
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map(([Icon, title, text]) => (
-            <div key={title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+            <div key={title} {...cursorMotion} className="motion-card rounded-2xl border border-slate-200 bg-gradient-to-br from-[#e5ead1]/60 via-[#fffdf8] to-[#f5ddd0]/60 p-6 shadow-sm hover:shadow-md dark:border-slate-800 dark:from-[#262b17] dark:via-[#1f2117] dark:to-[#2e2119]">
               <span className="grid size-10 place-items-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400"><Icon size={20} /></span>
               <h3 className="mt-4 font-semibold text-slate-900 dark:text-white">{title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400">{text}</p>
@@ -109,7 +113,7 @@ export default function Landing() {
           <h2 className="text-center text-3xl font-bold">How it works</h2>
           <div className="mt-12 grid gap-6 md:grid-cols-4">
             {STEPS.map(([Icon, title, text], i) => (
-              <div key={title} className="rounded-2xl border border-white/10 bg-white/5 p-6">
+              <div key={title} {...cursorMotion} className="motion-card rounded-2xl border border-white/10 bg-gradient-to-br from-white/10 via-white/5 to-[#c8754b]/20 p-6">
                 <div className="flex items-center gap-3">
                   <span className="grid size-10 place-items-center rounded-lg bg-indigo-500"><Icon size={20} /></span>
                   <span className="text-sm font-semibold text-indigo-300">Step {i + 1}</span>
@@ -134,7 +138,7 @@ export default function Landing() {
             </div>
           ))}
         </div>
-        <div className="mt-16 rounded-2xl bg-indigo-600 px-6 py-10 text-center text-white">
+        <div {...cursorMotion} className="motion-card mt-16 rounded-2xl bg-gradient-to-br from-[#4b5229] via-[#3d4321] to-[#9b5837] px-6 py-10 text-center text-white">
           <h3 className="text-2xl font-bold">Ready to check your resume?</h3>
           <p className="mt-2 text-indigo-100">It takes less than a minute.</p>
           <Link to="/analyze" className="mt-6 inline-flex items-center gap-2 rounded-lg bg-white px-5 py-3 font-semibold text-indigo-700 hover:bg-indigo-50">

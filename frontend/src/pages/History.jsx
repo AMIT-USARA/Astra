@@ -4,8 +4,10 @@ import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianG
 import { Eye, Download, Trash2, FileText, Inbox, TrendingUp } from 'lucide-react';
 import { getHistory, deleteAnalysis, downloadReport } from '../services/api.js';
 import { Card, Chip, PageHeader, Spinner, ErrorBox, scoreTone } from '../components/ui.jsx';
+import { usePageMeta } from '../seo.js';
 
 export default function History() {
+  usePageMeta('Analysis History | astrACode');
   const [items, setItems] = useState(null);
   const [error, setError] = useState('');
 

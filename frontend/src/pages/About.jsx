@@ -1,6 +1,7 @@
 import { Layers, Cpu, Database, Sigma, Users, Target } from 'lucide-react';
 import { Card, PageHeader } from '../components/ui.jsx';
 import { PROJECT } from '../config.js';
+import { usePageMeta } from '../seo.js';
 
 const STACK = [
   ['Frontend', 'React 19, Vite, Tailwind CSS, Recharts, Lucide icons, React Router'],
@@ -19,6 +20,10 @@ const CRITERIA = [
 ];
 
 export default function About() {
+  usePageMeta(
+    'How Resume Score Works — Algorithms & Criteria | astrACode',
+    'Learn how astrACode calculates your 0-100 resume score, TF-IDF cosine similarity, skill extraction, and AI review.',
+  );
   return (
     <div className="fade-in mx-auto max-w-5xl px-4 py-12">
       <PageHeader title="About the project" subtitle={`${PROJECT.title} · ${PROJECT.course}`} />
@@ -69,7 +74,7 @@ export default function About() {
             {PROJECT.institution && <p className="text-sm text-slate-600 dark:text-slate-300">{PROJECT.institution}</p>}
             {PROJECT.guide && (
               <div className="mt-3 flex items-center gap-3">
-                {PROJECT.guidePhoto && <img src={PROJECT.guidePhoto} alt={PROJECT.guide} className="size-16 rounded-full object-cover object-top ring-2 ring-indigo-100 dark:ring-indigo-900" />}
+                {PROJECT.guidePhoto && <img src={PROJECT.guidePhoto} alt={PROJECT.guide} loading="lazy" decoding="async" className="size-16 rounded-full object-cover object-top ring-2 ring-indigo-100 dark:ring-indigo-900" />}
                 <div className="text-sm text-slate-600 dark:text-slate-400">Guide<p className="font-bold text-slate-900 dark:text-white">{PROJECT.guide}</p></div>
               </div>
             )}

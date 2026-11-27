@@ -4,11 +4,86 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="AI Resume Checker: analyse resumes, extract skills and match them against job descriptions with NLP and TF-IDF." />
+    <title>astrACode — Free AI Resume Score Checker &amp; Job Match Analyzer</title>
+    <meta name="description" content="Check your resume score out of 100 in seconds. Get an explainable resume score, skill gap analysis, TF-IDF job match percentage, AI recruiter review, and a downloadable PDF report." />
+    <meta name="keywords" content="resume score, resume score checker, AI resume checker, ATS resume score, resume analyzer, job description match, skill gap analysis, astrACode" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://astra-tau-two.vercel.app/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="astrACode" />
+    <meta property="og:title" content="astrACode — Free AI Resume Score Checker &amp; Job Match Analyzer" />
+    <meta property="og:description" content="Get an explainable 0–100 resume score, skill gap breakdown, TF-IDF job match, and AI recruiter review in seconds." />
+    <meta property="og:url" content="https://astra-tau-two.vercel.app/" />
+    <meta property="og:image" content="https://astra-tau-two.vercel.app/favicon.svg" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="astrACode — Free AI Resume Score Checker" />
+    <meta name="twitter:description" content="Check your resume score out of 100 with transparent criteria, TF-IDF job matching, and AI feedback." />
+
+    <!-- Structured Data for Search Engines -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "SoftwareApplication",
+            "name": "astrACode — AI Resume Score Checker",
+            "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Web",
+            "url": "https://astra-tau-two.vercel.app/",
+            "description": "An AI-powered resume score checker that evaluates PDF and DOCX resumes out of 100 across 9 transparent criteria, computes TF-IDF job match, and provides AI recruiter feedback.",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "featureList": [
+              "0-100 explainable resume score across 9 criteria",
+              "TF-IDF and cosine similarity job description match",
+              "120+ technical & soft skill extraction",
+              "OpenAI recruiter review and bullet rewrites",
+              "Downloadable PDF analysis report"
+            ]
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "How is the resume score calculated?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "The resume score is calculated out of 100 across 9 transparent criteria: Contact info (10), Structure (10), Skills (20), Education (10), Experience (15), Projects (10), Certifications (5), Impact & language (10), and Keyword relevance (10 when a job description is provided)."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Which resume file formats are supported?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Text-based PDF and DOCX files up to 5 MB are supported."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is my uploaded resume file stored on disk?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. Uploaded resume files are processed in memory and never saved to disk. Only the extracted analysis results are saved to your private account."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <title>AI Resume Checker</title>
     <script>
       (function () {
         var t = localStorage.getItem('arc_theme');

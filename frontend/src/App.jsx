@@ -1,13 +1,24 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import Layout from './components/Layout.jsx';
 import Landing from './pages/Landing.jsx';
-import Analyze from './pages/Analyze.jsx';
-import Results from './pages/Results.jsx';
-import History from './pages/History.jsx';
-import About from './pages/About.jsx';
-import Help from './pages/Help.jsx';
-import Login from './pages/Login.jsx';
 import { RequireAuth } from './auth.jsx';
+import { Spinner } from './components/ui.jsx';
+
+const Analyze = lazy(() => import('./pages/Analyze.jsx'));
+const Results = lazy(() => import('./pages/Results.jsx'));
+const History = lazy(() => import('./pages/History.jsx'));
+const About = lazy(() => import('./pages/About.jsx'));
+const Help = lazy(() => import('./pages/Help.jsx'));
+const Login = lazy(() => import('./pages/Login.jsx'));
+
+function PageLoader() {
+  return (
+    <div className="grid place-items-center py-32 text-indigo-600 dark:text-indigo-400">
+      <Spinner className="size-8" />
+    </div>
+  );
+}
 
 function NotFound() {
   return (
@@ -21,17 +32,19 @@ function NotFound() {
 
 export default function App() {
   return (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route index element={<Landing />} />
-        <Route path="login" element={<Login />} />
-        <Route path="analyze" element={<RequireAuth><Analyze /></RequireAuth>} />
-        <Route path="results/:id" element={<RequireAuth><Results /></RequireAuth>} />
-        <Route path="history" element={<RequireAuth><History /></RequireAuth>} />
-        <Route path="about" element={<About />} />
-        <Route path="help" element={<Help />} />
-        <Route path="*" element={<NotFound />} />
-      </Route>
-    </Routes>
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route index element={<Landing />} />
+          <Route path="login" element={<Login />} />
+          <Route path="analyze" element={<RequireAuth><Analyze /></RequireAuth>} />
+          <Route path="results/:id" element={<RequireAuth><Results /></RequireAuth>} />
+          <Route path="history" element={<RequireAuth><History /></RequireAuth>} />
+          <Route path="about" element={<About />} />
+          <Route path="help" element={<Help />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
+    </Suspense>
   );
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Activity, HelpCircle, LifeBuoy, RefreshCw } from 'lucide-react';
 import { getHealth } from '../services/api.js';
 import { Card, Chip, PageHeader, Spinner } from '../components/ui.jsx';
+import { usePageMeta } from '../seo.js';
 
 const FAQ = [
   ['Which file formats are supported?', 'Text-based PDF and DOCX files up to 5 MB. Scanned (image-only) PDFs cannot be read because no OCR is performed.'],
@@ -21,6 +22,10 @@ const STEPS = [
 ];
 
 export default function Help() {
+  usePageMeta(
+    'Help & Resume Score FAQ | astrACode',
+    'Frequently asked questions about resume score calculation, supported PDF/DOCX formats, privacy, and AI review.',
+  );
   const [health, setHealth] = useState(null);
   const [loading, setLoading] = useState(true);
 

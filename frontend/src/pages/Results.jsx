@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { getAnalysis, downloadReport } from '../services/api.js';
 import { Card, Chips, Chip, ScoreRing, Spinner, ErrorBox, scoreTone } from '../components/ui.jsx';
+import { usePageMeta } from '../seo.js';
 
 const BAR = { green: '#5b7a3b', amber: '#c8754b', red: '#b84a39' };
 
@@ -146,6 +147,7 @@ function InfoRow({ icon: Icon, label, value }) {
 }
 
 export default function Results() {
+  usePageMeta('Resume Score Results | astrACode');
   const { id } = useParams();
   const [record, setRecord] = useState(null);
   const [error, setError] = useState('');

@@ -1,8 +1,28 @@
 // Small shared UI pieces used across pages.
 
+export const cursorMotion = {
+  onMouseMove: (e) => {
+    const el = e.currentTarget;
+    const r = el.getBoundingClientRect();
+    const x = e.clientX - r.left;
+    const y = e.clientY - r.top;
+    el.style.setProperty('--mx', `${x}px`);
+    el.style.setProperty('--my', `${y}px`);
+    el.style.setProperty('--rx', `${((0.5 - y / r.height) * 5).toFixed(2)}deg`);
+    el.style.setProperty('--ry', `${((x / r.width - 0.5) * 5).toFixed(2)}deg`);
+    el.style.setProperty('--spot', '1');
+  },
+  onMouseLeave: (e) => {
+    const el = e.currentTarget;
+    el.style.setProperty('--rx', '0deg');
+    el.style.setProperty('--ry', '0deg');
+    el.style.setProperty('--spot', '0');
+  },
+};
+
 export function Card({ title, icon: Icon, action, className = '', children }) {
   return (
-    <section className={`rounded-2xl border border-slate-200 bg-[#fffdf8] p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 ${className}`}>
+    <section {...cursorMotion} className={`motion-card rounded-2xl border border-slate-200 bg-[#fffdf8] p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 ${className}`}>
       {title && (
         <div className="mb-4 flex items-center justify-between gap-2">
           <h3 className="flex items-center gap-2 font-semibold text-slate-900 dark:text-white">

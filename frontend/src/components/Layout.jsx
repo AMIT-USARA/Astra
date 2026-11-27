@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet } from 'react-router-dom';
-import { LogOut, Menu, Moon, Sun, X } from 'lucide-react';
+import { LogOut, Menu, Moon, Sun, User, X } from 'lucide-react';
 import { useAuth } from '../auth.jsx';
 
 const LINKS = [
@@ -12,10 +12,10 @@ const LINKS = [
 
 export function Logo() {
   return (
-    <Link to="/" className="flex items-center gap-2.5 font-bold text-slate-900 dark:text-white">
-      <img src="/favicon.svg" alt="Astra logo" className="h-[43px] w-auto rounded-lg object-contain dark:hidden" />
-      <img src="/favicon-dark.svg" alt="Astra logo" className="hidden h-[43px] w-auto rounded-lg object-contain dark:block" />
-      AI Resume Checker
+    <Link to="/" className="flex items-center gap-1.5 font-bold text-slate-900 dark:text-white">
+      <img src="/favicon.svg" alt="astrACode logo" className="h-[43px] w-auto rounded-lg object-contain dark:hidden" />
+      <img src="/favicon-dark.svg" alt="astrACode logo" className="hidden h-[43px] w-auto rounded-lg object-contain dark:block" />
+      astrACode
     </Link>
   );
 }
@@ -46,14 +46,50 @@ function ThemeToggle() {
 
 function Account({ onClick }) {
   const { user, logout } = useAuth();
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDoc = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    const onKey = (e) => { if (e.key === 'Escape') setOpen(false); };
+    document.addEventListener('mousedown', onDoc);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDoc);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
   if (!user) return <NavLink to="/login" onClick={onClick} className="rounded-md px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">Log in</NavLink>;
   return (
-    <span className="flex items-center gap-2 px-3 py-2 text-sm text-slate-500 dark:text-slate-400">
-      <span className="max-w-40 truncate" title={user.email}>{user.email}</span>
-      <button onClick={() => { logout(); onClick?.(); }} className="inline-flex items-center gap-1 font-medium text-slate-600 hover:text-rose-600 dark:text-slate-300 dark:hover:text-rose-400" title="Log out">
-        <LogOut size={15} /> Log out
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        aria-label="Profile menu"
+        title="Profile"
+        className="grid size-9 place-items-center rounded-full border border-slate-200 bg-slate-100 text-slate-700 hover:border-indigo-400 hover:text-indigo-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-indigo-500 dark:hover:text-indigo-300"
+      >
+        <User size={17} />
       </button>
-    </span>
+      {open && (
+        <div className="absolute right-0 z-40 mt-2 w-60 rounded-xl border border-slate-200 bg-[#fffdf8] p-3 shadow-lg dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Signed in as</p>
+          <p className="mt-0.5 truncate text-sm font-medium text-slate-800 dark:text-slate-100" title={user.email}>{user.email}</p>
+          <div className="mt-3 border-t border-slate-100 pt-2 dark:border-slate-800">
+            <button
+              type="button"
+              onClick={() => { setOpen(false); logout(); onClick?.(); }}
+              className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-sm font-medium text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/50"
+            >
+              <LogOut size={15} /> Sign out
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 

@@ -4,6 +4,7 @@ import { UploadCloud, FileText, X, Briefcase, ScanSearch, AlertCircle } from 'lu
 import { analyzeResume } from '../services/api.js';
 import { Card, PageHeader, Spinner, ErrorBox } from '../components/ui.jsx';
 import { MAX_FILE_MB } from '../config.js';
+import { usePageMeta } from '../seo.js';
 
 const SAMPLE_JD = `We are hiring a Full Stack Developer Intern. The candidate will build and maintain web applications using React and Node.js with Express. Required skills: JavaScript, TypeScript, React, Node.js, Express, MongoDB, REST API design, Git. Experience with Docker, AWS and CI/CD pipelines is a plus. Knowledge of unit testing with Jest and writing clean, maintainable code is preferred. Strong communication and teamwork skills are required.`;
 
@@ -18,6 +19,7 @@ function validate(file) {
 }
 
 export default function Analyze() {
+  usePageMeta('Analyze Resume & Check Score | astrACode');
   const navigate = useNavigate();
   const input = useRef(null);
   const [file, setFile] = useState(null);
