@@ -9,6 +9,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <title>AI Resume Checker</title>
+    <script>
+      (function () {
+        var t = localStorage.getItem('arc_theme');
+        if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+          document.querySelector('link[rel="icon"]')?.setAttribute('href', '/favicon-dark.svg');
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

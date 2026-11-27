@@ -12,9 +12,9 @@ import { RequireAuth } from './auth.jsx';
 function NotFound() {
   return (
     <div className="mx-auto max-w-md px-4 py-24 text-center">
-      <p className="text-5xl font-bold text-indigo-600">404</p>
-      <p className="mt-3 text-slate-500">This page does not exist.</p>
-      <Link to="/" className="mt-6 inline-block font-semibold text-indigo-600">Go home</Link>
+      <p className="text-5xl font-bold text-indigo-600 dark:text-indigo-400">404</p>
+      <p className="mt-3 text-slate-500 dark:text-slate-400">This page does not exist.</p>
+      <Link to="/" className="mt-6 inline-block font-semibold text-indigo-600 dark:text-indigo-400">Go home</Link>
     </div>
   );
 }

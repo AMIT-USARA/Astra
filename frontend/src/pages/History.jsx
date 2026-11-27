@@ -36,10 +36,10 @@ export default function History() {
       </PageHeader>
 
       {!items.length ? (
-        <div className="rounded-2xl border border-dashed border-slate-300 bg-white py-20 text-center">
-          <Inbox className="mx-auto text-slate-300" size={44} />
-          <p className="mt-3 font-medium text-slate-700">No analyses yet</p>
-          <Link to="/analyze" className="mt-2 inline-block text-sm font-semibold text-indigo-600">Analyze your first resume</Link>
+        <div className="rounded-2xl border border-dashed border-slate-300 bg-white py-20 text-center dark:border-slate-700 dark:bg-slate-900">
+          <Inbox className="mx-auto text-slate-300 dark:text-slate-600" size={44} />
+          <p className="mt-3 font-medium text-slate-700 dark:text-slate-200">No analyses yet</p>
+          <Link to="/analyze" className="mt-2 inline-block text-sm font-semibold text-indigo-600 dark:text-indigo-400">Analyze your first resume</Link>
         </div>
       ) : (
         <>
@@ -48,22 +48,22 @@ export default function History() {
               <div className="h-56">
                 <ResponsiveContainer>
                   <LineChart data={trend}>
-                    <CartesianGrid stroke="#f1f5f9" />
-                    <XAxis dataKey="n" tick={{ fontSize: 12, fill: '#64748b' }} />
-                    <YAxis domain={[0, 100]} tick={{ fontSize: 12, fill: '#64748b' }} width={35} />
-                    <Tooltip />
+                    <CartesianGrid stroke="currentColor" className="text-slate-100 dark:text-slate-800" />
+                    <XAxis dataKey="n" tick={{ fontSize: 12, fill: '#94a3b8' }} />
+                    <YAxis domain={[0, 100]} tick={{ fontSize: 12, fill: '#94a3b8' }} width={35} />
+                    <Tooltip contentStyle={{ backgroundColor: 'var(--tooltip-bg)', borderColor: 'var(--tooltip-border)', color: 'var(--tooltip-fg)', borderRadius: '0.75rem' }} />
                     <Legend />
-                    <Line type="monotone" dataKey="Score" stroke="#4f46e5" strokeWidth={2} dot={{ r: 3 }} isAnimationActive={false} />
-                    <Line type="monotone" dataKey="Job match" stroke="#059669" strokeWidth={2} dot={{ r: 3 }} connectNulls isAnimationActive={false} />
+                    <Line type="monotone" dataKey="Score" stroke="#4b5229" strokeWidth={2} dot={{ r: 3 }} isAnimationActive={false} />
+                    <Line type="monotone" dataKey="Job match" stroke="#c8754b" strokeWidth={2} dot={{ r: 3 }} connectNulls isAnimationActive={false} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
             </Card>
           )}
 
-          <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+              <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wider text-slate-500 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-400">
                 <tr>
                   <th className="px-4 py-3">Resume</th>
                   <th className="px-4 py-3">Candidate</th>
@@ -73,21 +73,21 @@ export default function History() {
                   <th className="px-4 py-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {items.map((i) => (
-                  <tr key={i.id} className="hover:bg-slate-50">
+                  <tr key={i.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
                     <td className="px-4 py-3">
-                      <span className="flex items-center gap-2 font-medium text-slate-800"><FileText size={16} className="text-slate-400" />{i.fileName}</span>
+                      <span className="flex items-center gap-2 font-medium text-slate-800 dark:text-slate-100"><FileText size={16} className="text-slate-400 dark:text-slate-500" />{i.fileName}</span>
                     </td>
-                    <td className="px-4 py-3 text-slate-600">{i.candidateName || <span className="italic text-slate-400">Unknown</span>}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{i.candidateName || <span className="italic text-slate-400 dark:text-slate-500">Unknown</span>}</td>
                     <td className="px-4 py-3"><Chip tone={scoreTone(i.resumeScore)}>{i.resumeScore}</Chip></td>
-                    <td className="px-4 py-3">{i.jobMatch != null ? <Chip tone={scoreTone(i.jobMatch)}>{i.jobMatch}%</Chip> : <span className="text-slate-400">—</span>}</td>
-                    <td className="whitespace-nowrap px-4 py-3 text-slate-500">{new Date(i.createdAt).toLocaleString()}</td>
+                    <td className="px-4 py-3">{i.jobMatch != null ? <Chip tone={scoreTone(i.jobMatch)}>{i.jobMatch}%</Chip> : <span className="text-slate-400 dark:text-slate-500">—</span>}</td>
+                    <td className="whitespace-nowrap px-4 py-3 text-slate-500 dark:text-slate-400">{new Date(i.createdAt).toLocaleString()}</td>
                     <td className="px-4 py-3">
                       <div className="flex justify-end gap-1">
-                        <Link to={`/results/${i.id}`} className="rounded p-2 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600" title="View"><Eye size={16} /></Link>
-                        <button onClick={() => downloadReport(i.id).catch((e) => setError(e.message))} className="rounded p-2 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600" title="Download report"><Download size={16} /></button>
-                        <button onClick={() => remove(i.id)} className="rounded p-2 text-slate-500 hover:bg-rose-50 hover:text-rose-600" title="Delete"><Trash2 size={16} /></button>
+                        <Link to={`/results/${i.id}`} className="rounded p-2 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 dark:text-slate-400 dark:hover:bg-indigo-950/60 dark:hover:text-indigo-400" title="View"><Eye size={16} /></Link>
+                        <button onClick={() => downloadReport(i.id).catch((e) => setError(e.message))} className="rounded p-2 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 dark:text-slate-400 dark:hover:bg-indigo-950/60 dark:hover:text-indigo-400" title="Download report"><Download size={16} /></button>
+                        <button onClick={() => remove(i.id)} className="rounded p-2 text-slate-500 hover:bg-rose-50 hover:text-rose-600 dark:text-slate-400 dark:hover:bg-rose-950/60 dark:hover:text-rose-400" title="Delete"><Trash2 size={16} /></button>
                       </div>
                     </td>
                   </tr>

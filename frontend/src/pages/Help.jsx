@@ -34,36 +34,36 @@ export default function Help() {
 
       <div className="grid gap-6">
         <Card title="System status" icon={Activity} action={
-          <button onClick={check} className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:underline"><RefreshCw size={14} /> Recheck</button>
+          <button onClick={check} className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400"><RefreshCw size={14} /> Recheck</button>
         }>
-          {loading ? <Spinner className="size-5 text-indigo-600" /> : health?.error ? (
-            <div className="flex flex-wrap items-center gap-2 text-sm"><Chip tone="red">Backend offline</Chip><span className="text-slate-500">{health.error}</span></div>
+          {loading ? <Spinner className="size-5 text-indigo-600 dark:text-indigo-400" /> : health?.error ? (
+            <div className="flex flex-wrap items-center gap-2 text-sm"><Chip tone="red">Backend offline</Chip><span className="text-slate-500 dark:text-slate-400">{health.error}</span></div>
           ) : (
             <div className="flex flex-wrap items-center gap-2 text-sm">
               <Chip tone="green">Backend online</Chip>
               <Chip tone="indigo">Storage: {health.storage === 'mongodb' ? 'MongoDB' : 'Local JSON file'}</Chip>
               <Chip tone={health.ai ? 'green' : 'amber'}>{health.ai ? `AI review: ${health.ai}` : 'AI review off (no OpenAI key)'}</Chip>
-              <span className="text-slate-500">Uptime {health.uptime}s</span>
+              <span className="text-slate-500 dark:text-slate-400">Uptime {health.uptime}s</span>
             </div>
           )}
         </Card>
 
         <Card title="Frequently asked questions" icon={HelpCircle}>
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {FAQ.map(([q, a]) => (
               <details key={q} className="group py-3">
-                <summary className="cursor-pointer list-none font-medium text-slate-800 marker:hidden">
+                <summary className="cursor-pointer list-none font-medium text-slate-800 marker:hidden dark:text-slate-200">
                   <span className="mr-2 inline-block text-indigo-500 transition group-open:rotate-90">›</span>{q}
                 </summary>
-                <p className="mt-2 pl-5 text-sm text-slate-600">{a}</p>
+                <p className="mt-2 pl-5 text-sm text-slate-600 dark:text-slate-400">{a}</p>
               </details>
             ))}
           </div>
         </Card>
 
         <Card title="Troubleshooting" icon={LifeBuoy}>
-          <ul className="list-disc space-y-2 pl-5 text-sm text-slate-600">{STEPS.map((s) => <li key={s}>{s}</li>)}</ul>
-          <p className="mt-4 text-sm text-slate-500">Still stuck? Contact the project team listed on the About page.</p>
+          <ul className="list-disc space-y-2 pl-5 text-sm text-slate-600 dark:text-slate-300">{STEPS.map((s) => <li key={s}>{s}</li>)}</ul>
+          <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">Still stuck? Contact the project team listed on the About page.</p>
         </Card>
       </div>
     </div>

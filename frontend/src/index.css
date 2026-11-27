@@ -1,11 +1,50 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+
+  /* Earthy Olive / Moss primary palette (replaces default indigo) */
+  --color-indigo-50: #f3f5ea;
+  --color-indigo-100: #e5ead1;
+  --color-indigo-200: #ccd6a8;
+  --color-indigo-300: #aebd79;
+  --color-indigo-400: #8f9f54;
+  --color-indigo-500: #6b7838;
+  --color-indigo-600: #4b5229;
+  --color-indigo-700: #3d4321;
+  --color-indigo-800: #31361b;
+  --color-indigo-900: #262a16;
+  --color-indigo-950: #171a0d;
+
+  /* Warm Linen / Deep Forest-Olive neutrals (replaces default slate) */
+  --color-slate-50: #f7f2e8;
+  --color-slate-100: #efe7d8;
+  --color-slate-200: #dfd3be;
+  --color-slate-300: #c8b99f;
+  --color-slate-400: #8b8270;
+  --color-slate-500: #6d6555;
+  --color-slate-600: #554e40;
+  --color-slate-700: #3f3b2e;
+  --color-slate-800: #2b291f;
+  --color-slate-900: #1f2117;
+  --color-slate-950: #14160e;
+}
+
+:root {
+  --tooltip-bg: #fffdf8;
+  --tooltip-border: #dfd3be;
+  --tooltip-fg: #2b291f;
+}
+
+.dark {
+  --tooltip-bg: #1f2117;
+  --tooltip-border: #3f3b2e;
+  --tooltip-fg: #f7f2e8;
 }
 
 body {
-  @apply bg-slate-50 text-slate-800 antialiased;
+  @apply bg-slate-50 text-slate-800 antialiased dark:bg-slate-950 dark:text-slate-100;
 }
 
 .fade-in {
