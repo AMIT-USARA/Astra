@@ -3,4 +3,4 @@ Allow: /
 Disallow: /api/
 Disallow: /results/
 
-Sitemap: https://astra-tau-two.vercel.app/sitemap.xml
+Sitemap: https://oneastracode.vercel.app/sitemap.xml
