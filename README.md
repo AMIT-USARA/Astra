@@ -1,4 +1,6 @@
-# AI Resume Checker
+# astrACode — AI Resume Checker
+
+**Live Demo:** https://oneastracode.vercel.app/
 
 An AI-powered web application that **reads a resume (PDF or DOCX), scores it out of 100, and compares it with a job description**. It tells you which skills you have, which skills and keywords the job wants that your resume is missing, and exactly what to improve. An **OpenAI** model adds a recruiter-style review on top: a summary, concrete fixes, rewritten bullet points and a job fit judged by meaning rather than exact words. Users sign in with email and password, and each user sees only their own history. Everything can be downloaded as a PDF report.
 

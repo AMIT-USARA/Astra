@@ -54,3 +54,22 @@ test('missing info is reported as null, never invented', () => {
   assert.equal(r.candidate.phone, null);
   assert.equal(r.jobMatch, null);
 });
+
+test('parser handles ligatures, inline colon headings, dotted LinkedIn and skips Resume/title lines', () => {
+  const raw = [
+    'Curriculum Vitae',
+    'Full Stack Developer',
+    'Priya Sharma',
+    'priya@example.com | linkedin.com/in/priya.sharma',
+    'Skills: React, Node.js, MongoDB',
+    'Relevant Experience',
+    'Software Intern (05/2024 - Present)',
+    '• Built workﬂow and proﬁle APIs.',
+  ].join('\n');
+  const parsed = parseResume(raw);
+  assert.equal(parsed.candidate.name, 'Priya Sharma');
+  assert.equal(parsed.candidate.linkedin, 'linkedin.com/in/priya.sharma');
+  assert.ok(parsed.sections.skills?.[0].includes('React'));
+  assert.equal(parsed.experience.dateRanges[0], '05/2024 - Present');
+  assert.ok(parsed.text.includes('workflow') && parsed.text.includes('profile'));
+});

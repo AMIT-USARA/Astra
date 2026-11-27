@@ -19,8 +19,15 @@ export async function extractText(buffer, ext) {
 export function cleanText(raw) {
   return raw
     .replace(/\r/g, '')
+    .replace(/\u00A0/g, ' ')
+    .replace(/[\u200B\uFEFF]/g, '')
+    .replace(/ﬀ/g, 'ff')
+    .replace(/ﬁ/g, 'fi')
+    .replace(/ﬂ/g, 'fl')
+    .replace(/ﬃ/g, 'ffi')
+    .replace(/ﬄ/g, 'ffl')
     .replace(/-- \d+ of \d+ --/g, '') // pdf-parse page markers
-    .replace(/[•●▪‣⁃◦]/g, '•')
+    .replace(/[•●▪‣⁃◦➢✓]/g, '•')
     .replace(/[ \t]+/g, ' ')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
@@ -31,12 +38,12 @@ export function cleanText(raw) {
 // Heading keyword -> canonical section. A line is a heading when it is short and
 // consists (almost) only of one of these phrases.
 const HEADINGS = {
-  summary: ['summary', 'professional summary', 'profile', 'objective', 'career objective', 'about me'],
-  education: ['education', 'academic background', 'academics', 'educational qualification', 'educational qualifications', 'academic qualifications'],
-  experience: ['experience', 'work experience', 'professional experience', 'employment', 'employment history', 'internships', 'internship', 'work history'],
-  projects: ['projects', 'academic projects', 'personal projects', 'key projects', 'project'],
-  skills: ['skills', 'technical skills', 'key skills', 'core competencies', 'technologies', 'tech stack', 'skills & tools', 'skills and tools'],
-  certifications: ['certifications', 'certification', 'certificates', 'courses', 'licenses & certifications', 'licenses and certifications'],
+  summary: ['summary', 'professional summary', 'executive summary', 'career summary', 'profile summary', 'profile', 'objective', 'career objective', 'about me', 'about'],
+  education: ['education', 'academic background', 'academics', 'educational qualification', 'educational qualifications', 'academic qualifications', 'education & training', 'qualifications', 'qualification'],
+  experience: ['experience', 'work experience', 'professional experience', 'relevant experience', 'industry experience', 'professional background', 'employment', 'employment history', 'internships', 'internship', 'work history'],
+  projects: ['projects', 'academic projects', 'personal projects', 'key projects', 'selected projects', 'major projects', 'software projects', 'relevant projects', 'project'],
+  skills: ['skills', 'technical skills', 'key skills', 'core competencies', 'technical proficiencies', 'skills summary', 'areas of expertise', 'technologies', 'tech stack', 'skills & tools', 'skills and tools', 'tools & technologies', 'programming languages'],
+  certifications: ['certifications', 'certification', 'certificates', 'courses', 'licenses & certifications', 'licenses and certifications', 'certifications & courses', 'licenses'],
   achievements: ['achievements', 'awards', 'honors', 'accomplishments', 'awards & achievements'],
   activities: ['extracurricular activities', 'activities', 'positions of responsibility', 'leadership', 'volunteering'],
 };
@@ -54,14 +61,27 @@ function headingOf(line) {
 export function splitSections(text) {
   const sections = {};
   let current = 'header';
-  for (const line of text.split('\n')) {
+  for (const rawLine of text.split('\n')) {
+    const line = rawLine.trim();
+    if (!line) continue;
     const h = headingOf(line);
     if (h) {
       current = h;
       sections[current] ||= [];
       continue;
     }
-    if (line.trim()) (sections[current] ||= []).push(line.trim());
+    const colonIdx = line.indexOf(':');
+    if (colonIdx > 0 && colonIdx < 35) {
+      const prefixHeading = headingOf(line.slice(0, colonIdx));
+      if (prefixHeading) {
+        current = prefixHeading;
+        sections[current] ||= [];
+        const rest = line.slice(colonIdx + 1).trim();
+        if (rest) sections[current].push(rest);
+        continue;
+      }
+    }
+    (sections[current] ||= []).push(line);
   }
   return sections;
 }
@@ -70,12 +90,12 @@ export function splitSections(text) {
 
 const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/;
 const PHONE_RE = /\(?\+?\(?\d[\d\s().-]{8,17}\d/g;
-const LINKEDIN_RE = /(?:https?:\/\/)?(?:www\.)?linkedin\.com\/in\/[A-Za-z0-9_-]+/i;
+const LINKEDIN_RE = /(?:https?:\/\/)?(?:www\.)?linkedin\.com\/in\/[A-Za-z0-9._-]+/i;
 const GITHUB_RE = /(?:https?:\/\/)?(?:www\.)?github\.com\/[A-Za-z0-9_-]+/i;
 const DEGREE_RE = /\b(B\.?\s?Tech|M\.?\s?Tech|B\.?E\.?|M\.?E\.?|B\.?Sc|M\.?Sc|BCA|MCA|MBA|BBA|B\.?Com|Ph\.?D|Bachelor(?:'s)?(?: of [A-Za-z ]+)?|Master(?:'s)?(?: of [A-Za-z ]+)?|Diploma|Higher Secondary|Senior Secondary|Class (?:X|XII|10|12)(?:th)?|HSC|SSC|CBSE|ICSE)\b/i;
 const GRADE_RE = /\b(?:CGPA|GPA|SGPA|Percentage)\s*[:\-]?\s*\d{1,2}(?:\.\d{1,2})?(?:\s*\/\s*10)?|\b\d{2}(?:\.\d{1,2})?\s?%/i;
 const YEAR_RE = /\b(19|20)\d{2}\b/;
-const DATE_RANGE_RE = /\b(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\.?\s+)?(?:19|20)\d{2}\s*(?:-|–|—|to)\s*(?:(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\.?\s+)?(?:19|20)\d{2}|Present|Current|Now|Ongoing)\b/gi;
+const DATE_RANGE_RE = /\b(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\.?\s+|(?:0?[1-9]|1[0-2])\/)?(?:19|20)\d{2}\s*(?:-|–|—|to)\s*(?:(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\.?\s+|(?:0?[1-9]|1[0-2])\/)?(?:19|20)\d{2}|Present|Current|Now|Ongoing)\b/gi;
 
 const first = (re, text) => text.match(re)?.[0]?.trim() || null;
 
@@ -89,15 +109,22 @@ function extractPhone(text) {
   return null;
 }
 
+const NON_NAME_WORDS = new Set([
+  'resume', 'curriculum', 'vitae', 'cv', 'profile', 'portfolio', 'page',
+  'developer', 'engineer', 'designer', 'analyst', 'intern', 'manager', 'architect',
+  'consultant', 'student', 'fresher', 'software', 'full', 'stack', 'frontend', 'backend',
+]);
+
 // Name heuristic: first line in the header block that looks like 2-4 capitalised
-// words with no digits, symbols or section keywords. Returns null rather than guessing.
+// words with no digits, symbols or section/title keywords. Returns null rather than guessing.
 function extractName(sections) {
-  const candidates = (sections.header || []).slice(0, 5);
+  const candidates = (sections.header || []).slice(0, 8);
   for (const line of candidates) {
     const clean = line.split(/[|,•]/)[0].trim();
     if (/[\d@:/]/.test(clean)) continue;
     const words = clean.split(/\s+/);
     if (words.length < 2 || words.length > 4) continue;
+    if (words.some((w) => NON_NAME_WORDS.has(w.toLowerCase().replace(/[^a-z]/g, '')))) continue;
     if (words.every((w) => /^[A-Z][A-Za-z.'-]*$/.test(w) || /^[A-Z.'-]+$/.test(w))) {
       return words.map((w) => (w === w.toUpperCase() && w.length > 2 ? w[0] + w.slice(1).toLowerCase() : w)).join(' ');
     }
